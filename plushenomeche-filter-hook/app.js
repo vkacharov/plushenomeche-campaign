@@ -21,9 +21,9 @@ exports.lambdaHandler = async (event, context) => {
                 endpointId: key, 
                 userId: userId,
                 channelType: channelType, 
+                address: endpoint.Address,
                 version: 1
             }); 
-
             const encryptedSignature = await encrypt(signature)
             attr["Signature"] = [encryptedSignature];
         }

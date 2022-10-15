@@ -87,6 +87,12 @@ Resources:
             TableName: !Ref UnsubscriptionEventsTable
         - KMSDecryptPolicy:
             KeyId: 32ba0d5b-bc64-4627-aca8-796bc462460a
+        - Statement:
+            Sid: SesPutSuppressedDestinationPolicy
+            Effect: Allow
+            Action:
+              - ses:PutSuppressedDestination
+            Resource: '*'
       Events:
         Unsubscribe:
           Type: HttpApi # More info about API Event Source: https://github.com/aws/serverless-application-model/blob/master/versions/2016-10-31.md#httpapi

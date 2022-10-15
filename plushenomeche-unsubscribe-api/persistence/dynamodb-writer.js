@@ -1,9 +1,9 @@
 const AWS = require('aws-sdk'); 
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
-exports.putUnsubscribeEvent = async (tableName, unsubscribeEvent) => {
+exports.putUnsubscribeEvent = async (unsubscribeEvent) => {
     var params = {
-        TableName : tableName,
+        TableName : 'UnsubscribeEvents',
         Item: unsubscribeEvent
       };
     const result = await documentClient.put(params).promise();
