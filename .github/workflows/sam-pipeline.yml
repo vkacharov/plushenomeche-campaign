@@ -18,4 +18,4 @@ jobs:
       - run: sam build --use-container
 
 # sam deploy
-      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name plushenomeche-campaign --s3-bucket plushenomeche-campaign-cli-bucket-1 s3-prefix plushenomeche-campaign --capabilities CAPABILITY_IAM --region eu-west-1
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name plushenomeche-campaign --s3-bucket plushenomeche-campaign-deployment-bucket s3-prefix plushenomeche-campaign --capabilities CAPABILITY_IAM --region eu-west-1
