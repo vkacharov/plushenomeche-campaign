@@ -11,9 +11,27 @@ Globals:
     Timeout: 3
     Environment:
       Variables:
-        KMS_KEY_ID: 32ba0d5b-bc64-4627-aca8-796bc462460a
-
+        KMS_KEY_ID: !GetAtt EncryptionKey.KeyId
 Resources:
+  EncryptionKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: Encrypt the signature of the sent emails
+      Enabled: True
+      EnableKeyRotation: False
+      KeySpec: SYMMETRIC_DEFAULT
+      KeyUsage: ENCRYPT_DECRYPT
+      MultiRegion: False
+      KeyPolicy:
+        Version: 2012-10-17
+        Id: default-key-policy
+        Statement:
+          - Sid: Enable Root User Permissions
+            Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+            Action: 'kms:*'
+            Resource: '*'
 
   UnsubscriptionEventsTable:
     Type: AWS::DynamoDB::Table
@@ -32,9 +50,7 @@ Resources:
         - 
           AttributeName: "Timestamp"
           KeyType: "RANGE"
-      ProvisionedThroughput: 
-        ReadCapacityUnits: "5"
-        WriteCapacityUnits: "5"
+      BillingMode: PAY_PER_REQUEST
       TableName: "UnsubscribeEvents"
 
   FilterHook:
@@ -47,7 +63,7 @@ Resources:
         - x86_64
       Policies:
         - KMSEncryptPolicy:
-            KeyId: 32ba0d5b-bc64-4627-aca8-796bc462460a
+            KeyId: !GetAtt EncryptionKey.KeyId
 
   EmailsApplication:
     Type: AWS::Pinpoint::App
@@ -86,7 +102,7 @@ Resources:
         - DynamoDBWritePolicy:
             TableName: !Ref UnsubscriptionEventsTable
         - KMSDecryptPolicy:
-            KeyId: 32ba0d5b-bc64-4627-aca8-796bc462460a
+            KeyId: !GetAtt EncryptionKey.KeyId
         - Statement:
             Sid: SesPutSuppressedDestinationPolicy
             Effect: Allow
